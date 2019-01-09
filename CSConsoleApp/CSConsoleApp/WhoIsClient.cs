@@ -1,7 +1,5 @@
 ﻿using System.Threading.Tasks;
 using RestSharp;
-using Newtonsoft.Json;
-using System;
 
 namespace Crawler
 {

@@ -1,16 +1,11 @@
-﻿using System;
-using System.Net;
-
-namespace Crawler
+﻿namespace Crawler
 {
     public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            Crawler c = new Crawler();
+            Crawler c = new Crawler(new WhoIsDataParser(), new WhoIsClient());
             c.Run();
         }
-
-
     }
 }
