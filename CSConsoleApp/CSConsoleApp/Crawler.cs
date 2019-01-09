@@ -10,10 +10,11 @@ namespace Crawler
         private static string _outputFileName = @"c:\output.txt";
         public void Run()
         {
+            WhoIsDataParser parser = new WhoIsDataParser();
             foreach (var name in GetDomainNames())
             {
                 var result = DoQuery(name);
-                Console.WriteLine(result);
+                parser.ParseHtml(result);
             }
         }
 
