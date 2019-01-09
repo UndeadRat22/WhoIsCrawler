@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 
 namespace Crawler
 {
@@ -6,7 +7,10 @@ namespace Crawler
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Crawler c = new Crawler();
+            c.Run();
         }
+
+
     }
 }
