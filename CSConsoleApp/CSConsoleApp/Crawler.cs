@@ -9,9 +9,6 @@ namespace Crawler
 {
     public class Crawler
     {
-        private static string _inputFileName = @"c:\domains.txt";
-        private static string _outputFileName = @"d:\output.json";
-
         private WhoIsDataParser _parser;
         private WhoIsClient _client;
 
@@ -39,7 +36,7 @@ namespace Crawler
 
         private void WriteToFile(List<DomainInformation> data)
         {
-            using (StreamWriter file = File.CreateText(_outputFileName))
+            using (StreamWriter file = File.CreateText(Program.Settings.OutputFileName))
             {
                 JsonSerializer serializer = new JsonSerializer();
                 serializer.Serialize(file, data);
@@ -58,11 +55,11 @@ namespace Crawler
             StreamReader reader = null;
             try
             {
-                reader = new StreamReader(_inputFileName);
+                reader = new StreamReader(Program.Settings.InputFileName);
             }
             catch
             {
-                Console.WriteLine($"Failed to open file:{_inputFileName}");
+                Console.WriteLine($"Failed to open file:{Program.Settings.InputFileName}");
             }
             if (reader != null)
             {
