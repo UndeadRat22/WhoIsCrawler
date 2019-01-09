@@ -3,13 +3,14 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace Crawler
 {
     public class Crawler
     {
         private static string _inputFileName = @"c:\domains.txt";
-        private static string _outputFileName = @"c:\output.txt";
+        private static string _outputFileName = @"d:\output.json";
 
         private WhoIsDataParser _parser;
         private WhoIsClient _client;
@@ -22,15 +23,26 @@ namespace Crawler
 
         public void Run()
         {
+            List<DomainInformation> data = new List<DomainInformation>();
             Stopwatch sw = new Stopwatch();
             foreach (var name in GetDomainNames())
             {
                 sw.Restart();
                 var queryResult = DoQuery(name);
                 var info = _parser.ParseHtml(queryResult);
-                //TODO: write info to some stream.
+                data.Add(info);
                 sw.Stop();
                 Console.WriteLine($"Time elapsed to get info for {name}: {sw.Elapsed}");
+            }
+            WriteToFile(data);
+        }
+
+        private void WriteToFile(List<DomainInformation> data)
+        {
+            using (StreamWriter file = File.CreateText(_outputFileName))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.Serialize(file, data);
             }
         }
 
