@@ -1,9 +1,10 @@
-﻿namespace Crawler
+﻿using WhoIsCrawler.Infrastructure;
+using WhoIsCrawler.Services;
+
+namespace WhoIsCrawler
 {
     public class Program
     {
-        public static Config Settings { get; private set; }
-
         public static void Main(string[] args)
         {
             if (args.Length < 3)
@@ -11,25 +12,33 @@
                 System.Console.WriteLine("Please enter the files to read and write from.");
                 return;
             }
-            Settings = new Config
+            InitConfig(args);
+            Start();
+        }
+
+        private static void InitConfig(string[] args)
+        {
+            Configuration.Current = new Configuration
             {
                 InputFileName = args[0],
                 OutputFileName = args[1],
                 ProxyAddress = args[2],
                 ProxyUsername = args.Length > 3 ? args[3] : "",
-                ProxyPassword = args.Length > 4 ? args[4] : ""
+                ProxyPassword = args.Length > 4 ? args[4] : "",
+                WhoIsDomain = "https://www.whois.com/",
+                Timeout = 15000,
+                FailedLogFile = @"D:\crawler_fail_log.log",
             };
-            Crawler c = new Crawler(new WhoIsDataParser(), new WhoIsClient());
-            c.Run();
         }
 
-        public class Config
+        private static void Start()
         {
-            public string InputFileName { get; set; }
-            public string OutputFileName { get; set; }
-            public string ProxyAddress { get; set; }
-            public string ProxyUsername { get; set; }
-            public string ProxyPassword { get; set; }
+            Crawler c = new Crawler(
+                new WhoIsDataParser(), 
+                new WhoIsClient(), 
+                new FileLogger(Configuration.Current.FailedLogFile), 
+                new ConsoleLogger());
+            c.Run();
         }
     }
 }

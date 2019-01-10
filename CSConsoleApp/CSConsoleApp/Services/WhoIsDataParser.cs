@@ -1,7 +1,10 @@
 ﻿using HtmlAgilityPack;
+
+using WhoIsCrawler.Extensions;
+
 using System.Linq;
 
-namespace Crawler
+namespace WhoIsCrawler.Services
 {
     public class WhoIsDataParser
     {

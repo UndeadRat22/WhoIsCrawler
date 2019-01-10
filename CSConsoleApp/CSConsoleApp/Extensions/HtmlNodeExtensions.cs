@@ -1,5 +1,5 @@
 ﻿using HtmlAgilityPack;
-namespace Crawler
+namespace WhoIsCrawler.Extensions
 {
     public static class HtmlNodeExtensions
     {
