@@ -45,7 +45,10 @@ namespace Crawler
 
         public string DoQuery(string domain)
         {
-            var resp = _client.QueryAsync(domain);
+            var resp = _client.QueryWithProxyAsync(domain, 
+                Program.Settings.ProxyAddress, 
+                Program.Settings.ProxyUsername, 
+                Program.Settings.ProxyPassword);
             var result = resp.Result;
             return result.Content;
         }
