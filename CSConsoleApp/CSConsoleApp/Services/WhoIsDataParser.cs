@@ -13,7 +13,12 @@ namespace WhoIsCrawler.Services
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
             var table = doc.DocumentNode.SelectSingleNodeByClass("df-block");
+            if (table == null)
+                return null;
+
             var rows = table.SelectNodesByClass("df-row");
+            if (rows == null)
+                return null;
 
             var domain = SelectByInnerTextValue(rows, "Domain").InnerText;
             var registrar = SelectByInnerTextValue(rows, "Registrar").InnerText;

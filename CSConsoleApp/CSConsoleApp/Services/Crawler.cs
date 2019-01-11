@@ -34,7 +34,7 @@ namespace WhoIsCrawler.Services
                 var queryResult = DoQuery(name);
                 if (queryResult.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    DomainInformation info;
+                    DomainInformation info = null;
                     try
                     {
                         info = _parser.ParseHtml(queryResult.Content);
@@ -44,6 +44,8 @@ namespace WhoIsCrawler.Services
                         _failLogger.Log($"{name}");
                         continue;
                     }
+                    if (info == null)
+                        continue;
                     data.Add(info);
                     sw.Stop();
                     _successLogger.Log($"Got info for: {name} Elapsed: {sw.Elapsed}");
