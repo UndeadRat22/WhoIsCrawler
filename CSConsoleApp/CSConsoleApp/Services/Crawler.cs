@@ -34,15 +34,23 @@ namespace WhoIsCrawler.Services
                 var queryResult = DoQuery(name);
                 if (queryResult.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    var info = _parser.ParseHtml(queryResult.Content);
+                    DomainInformation info;
+                    try
+                    {
+                        info = _parser.ParseHtml(queryResult.Content);
+                    }
+                    catch
+                    {
+                        _failLogger.Log($"{name}");
+                        continue;
+                    }
                     data.Add(info);
                     sw.Stop();
                     _successLogger.Log($"Got info for: {name} Elapsed: {sw.Elapsed}");
                 }
                 else
                 {
-                    sw.Stop();
-                    _failLogger.Log($"Failed to get info for {name} Elapsed: {sw.Elapsed}");
+                    _failLogger.Log($"{name}");
                 }
             }
             WriteToFile(data);
