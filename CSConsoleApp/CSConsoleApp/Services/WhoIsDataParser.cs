@@ -3,12 +3,13 @@
 using WhoIsCrawler.Extensions;
 
 using System.Linq;
+using WhoIsCrawler.Models;
 
 namespace WhoIsCrawler.Services
 {
     public class WhoIsDataParser
     {
-        public DomainInformation ParseHtml(string html)
+        public DomainInformation ParseDomainInfo(string html)
         {
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
@@ -19,33 +20,68 @@ namespace WhoIsCrawler.Services
             var rows = table.SelectNodesByClass("df-row");
             if (rows == null)
                 return null;
+            return new DomainInformation {
+                Domain = GetFieldValue(rows, "Domain"),
+                Registrar = GetFieldValue(rows, "Registrar"),
+                Registered = GetFieldValue(rows, "Registered On"),
+                Expires = GetFieldValue(rows, "Expires On"),
+                Updated = GetFieldValue(rows, "Updated On"),
+                Status = GetFieldHtml(rows, "Status")?.Split("<br>"),
+                Servers = GetFieldHtml(rows, "Name Servers")?.Split("<br>"),
+            };
+        }
+        public RegistrantInformation ParseRegistrantInfo(string html)
+        {
+            var doc = new HtmlDocument();
+            doc.LoadHtml(html);
+            var tables = doc.DocumentNode.SelectNodesByClass("df-block");
+            if (tables == null)
+                return null;
 
-            var domain = SelectByInnerTextValue(rows, "Domain").InnerText;
-            var registrar = SelectByInnerTextValue(rows, "Registrar").InnerText;
-            var registered = SelectByInnerTextValue(rows, "Registered On").InnerText;
-            var expires = SelectByInnerTextValue(rows, "Expires On").InnerText;
-            var updated = SelectByInnerTextValue(rows, "Updated On").InnerText;
-            var statuses = SelectByInnerTextValue(rows, "Status").InnerHtml.Split("<br>");
-            var servers = SelectByInnerTextValue(rows, "Name Servers").InnerHtml.Split("<br>");
+            var table = tables.First(node => node.InnerText.Contains("Registrant Contact"));
 
-            return new DomainInformation
+            var rows = table.SelectNodesByClass("df-row");
+            if (rows == null)
+                return null;
+
+            return new RegistrantInformation
             {
-                Domain = domain,
-                Registrar = registrar,
-                Registered = registered,
-                Expires = expires,
-                Updated = updated,
-                Status = statuses,
-                Servers = servers
+                Name = GetFieldValue(rows, "Name"),
+                Organization = GetFieldValue(rows, "Organization"),
+                Street = GetFieldValue(rows, "Street"),
+                City = GetFieldValue(rows, "City"),
+                PostalCode = GetFieldValue(rows, "Postal Code"),
+                Country = GetFieldValue(rows, "Country"),
+                State = GetFieldValue(rows, "State"),
+                Phone = GetFieldValue(rows, "Phone"),
+                Fax = GetFieldValue(rows, "Fax"),
             };
         }
 
-        private HtmlNode SelectByInnerTextValue(HtmlNodeCollection collection, string innerText)
+        private string GetFieldHtml(HtmlNodeCollection nodes, string field)
         {
-            return collection
-                .First(node => node.InnerText.Contains(innerText))
-                .ChildNodes
-                .First(node => node.HasClass("df-value"));
+            try
+            {
+                var res = nodes.SelectByInnerText(field).InnerHtml;
+                return res;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private string GetFieldValue(HtmlNodeCollection nodes, string field)
+        {
+            try
+            {
+                var res = nodes.SelectByInnerText(field).InnerText;
+                return res;
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

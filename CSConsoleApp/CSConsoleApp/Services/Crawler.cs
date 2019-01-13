@@ -6,6 +6,7 @@ using System.IO;
 using Newtonsoft.Json;
 using RestSharp;
 using WhoIsCrawler.Infrastructure.Abstract;
+using WhoIsCrawler.Models;
 
 namespace WhoIsCrawler.Services
 {
@@ -26,7 +27,8 @@ namespace WhoIsCrawler.Services
 
         public void Run()
         {
-            List<DomainInformation> data = new List<DomainInformation>();
+            var domainData = new List<DomainInformation>();
+            var registrantData = new List<RegistrantInformation>();
             Stopwatch sw = new Stopwatch();
             foreach (var name in GetDomainNames())
             {
@@ -34,19 +36,22 @@ namespace WhoIsCrawler.Services
                 var queryResult = DoQuery(name);
                 if (queryResult.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    DomainInformation info = null;
+                    DomainInformation domainInfo = null;
+                    RegistrantInformation registrantInfo = null;
                     try
                     {
-                        info = _parser.ParseHtml(queryResult.Content);
+                        registrantInfo = _parser.ParseRegistrantInfo(queryResult.Content);
+                        domainInfo = _parser.ParseDomainInfo(queryResult.Content);
                     }
                     catch
                     {
                         _failLogger.Log($"{name}");
                         continue;
                     }
-                    if (info == null)
-                        continue;
-                    data.Add(info);
+                    if (domainInfo != null)
+                        domainData.Add(domainInfo);
+                    if (registrantInfo != null)
+                        registrantData.Add(registrantInfo);
                     sw.Stop();
                     _successLogger.Log($"Got info for: {name} Elapsed: {sw.Elapsed}");
                 }
@@ -55,12 +60,13 @@ namespace WhoIsCrawler.Services
                     _failLogger.Log($"{name}");
                 }
             }
-            WriteToFile(data);
+            WriteToFile(domainData, Configuration.Current.OutputFileName);
+            WriteToFile(registrantData, @"C:\Users\Public\registrants.json");
         }
 
-        private void WriteToFile(List<DomainInformation> data)
+        private void WriteToFile<T>(List<T> data, string filename)
         {
-            using (StreamWriter file = File.CreateText(Configuration.Current.OutputFileName))
+            using (StreamWriter file = File.CreateText(filename))
             {
                 JsonSerializer serializer = new JsonSerializer();
                 serializer.Serialize(file, data);
@@ -69,12 +75,14 @@ namespace WhoIsCrawler.Services
 
         public IRestResponse<string> DoQuery(string domain)
         {
-            var resp = _client.QueryWithProxyAsync(domain,
+            if (Configuration.Current.ProxyAddress == "")
+                return _client.QueryAsync(domain).Result;
+            
+            return _client.QueryWithProxyAsync(domain,
                 Configuration.Current.ProxyAddress,
                 Configuration.Current.ProxyUsername,
-                Configuration.Current.ProxyPassword);
-                
-            return resp.Result;
+                Configuration.Current.ProxyPassword)
+                .Result;
         }
 
         private static IEnumerable<string> GetDomainNames()

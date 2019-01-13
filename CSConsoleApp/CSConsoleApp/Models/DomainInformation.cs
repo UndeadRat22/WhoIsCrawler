@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace WhoIsCrawler
+namespace WhoIsCrawler.Models
 {
     public class DomainInformation
     {

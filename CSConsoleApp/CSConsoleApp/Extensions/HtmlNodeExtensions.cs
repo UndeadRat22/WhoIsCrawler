@@ -1,4 +1,6 @@
 ﻿using HtmlAgilityPack;
+using System.Linq;
+
 namespace WhoIsCrawler.Extensions
 {
     public static class HtmlNodeExtensions
@@ -14,6 +16,16 @@ namespace WhoIsCrawler.Extensions
             if (node == null)
                 return null;
             return node.SelectNodes($"//*[contains(@class,'{classToFind}')]");
+        }
+
+        public static HtmlNode SelectByInnerText(this HtmlNodeCollection collection, string innerText)
+        {
+            if (collection == null)
+                return null;
+            return collection
+                .First(node => node.InnerText.Contains(innerText))
+                .ChildNodes
+                .First(node => node.HasClass("df-value"));
         }
     }
 }

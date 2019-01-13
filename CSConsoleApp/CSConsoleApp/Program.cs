@@ -7,7 +7,7 @@ namespace WhoIsCrawler
     {
         public static void Main(string[] args)
         {
-            if (args.Length < 3)
+            if (args.Length < 2)
             {
                 System.Console.WriteLine("Please enter the files to read and write from.");
                 return;
@@ -22,10 +22,10 @@ namespace WhoIsCrawler
             {
                 InputFileName = args[0],
                 OutputFileName = args[1],
-                ProxyAddress = args[2],
+                ProxyAddress = args.Length > 2 ? args[2] : "",
                 ProxyUsername = args.Length > 3 ? args[3] : "",
                 ProxyPassword = args.Length > 4 ? args[4] : "",
-                FailedLogFile = args.Length > 5 ? args[5] : @"D:\failed_domains.log",
+                FailedLogFile = args.Length > 5 ? args[5] : @"C:\Users\Public\failed_domains.log",
                 WhoIsDomain = "https://www.whois.com/",
                 Timeout = 15000,
             };
