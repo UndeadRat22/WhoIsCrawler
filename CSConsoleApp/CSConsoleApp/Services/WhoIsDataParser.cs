@@ -23,22 +23,24 @@ namespace WhoIsCrawler.Services
             }
 
             var rows = table.SelectNodesByClass("df-row");
-            if (rows == null)
+            if (rows != null)
             {
-                var raw = doc.DocumentNode.SelectSingleNodeByClass("df-raw");
-                if (raw == null)
-                    return null;
-                return ParseRawForDomainInfo(raw.InnerText);
+                return new DomainInformation
+                {
+                    Domain = GetFieldValue(rows, "Domain"),
+                    Registrar = GetFieldValue(rows, "Registrar"),
+                    Registered = GetFieldValue(rows, "Registered On"),
+                    Expires = GetFieldValue(rows, "Expires On"),
+                    Updated = GetFieldValue(rows, "Updated On"),
+                    Status = GetFieldHtml(rows, "Status")?.Split("<br>"),
+                    Servers = GetFieldHtml(rows, "Name Servers")?.Split("<br>"),
+                };
             }
-            return new DomainInformation {
-                Domain = GetFieldValue(rows, "Domain"),
-                Registrar = GetFieldValue(rows, "Registrar"),
-                Registered = GetFieldValue(rows, "Registered On"),
-                Expires = GetFieldValue(rows, "Expires On"),
-                Updated = GetFieldValue(rows, "Updated On"),
-                Status = GetFieldHtml(rows, "Status")?.Split("<br>"),
-                Servers = GetFieldHtml(rows, "Name Servers")?.Split("<br>"),
-            };
+            var raw = doc.DocumentNode.SelectSingleNodeByClass("df-raw");
+            if (raw == null)
+                return null;
+            return ParseRawForDomainInfo(raw.InnerText);
+
         }
         public RegistrantInformation ParseRegistrantInfo(string html)
         {
