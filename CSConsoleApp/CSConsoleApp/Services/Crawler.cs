@@ -36,23 +36,19 @@ namespace WhoIsCrawler.Services
                 var queryResult = DoQuery(name);
                 if (queryResult.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    DomainInformation domainInfo = null;
-                    RegistrantInformation registrantInfo = null;
-                    try
-                    {
-                        registrantInfo = _parser.ParseRegistrantInfo(queryResult.Content);
-                        domainInfo = _parser.ParseDomainInfo(queryResult.Content);
-                    }
-                    catch
-                    {
-                        _failLogger.Log($"{name}");
-                        continue;
-                    }
-                    if (domainInfo != null)
+                    var domainInfo = GetDomainInfo(queryResult.Content);
+                    var registrantInfo = GetRegistrantInfo(queryResult.Content);
+                    if (domainInfo != null)         
                         domainData.Add(domainInfo);
+                    else
+                        _failLogger.Log($"{name}");
+
                     if (registrantInfo != null)
                         registrantData.Add(registrantInfo);
-                    sw.Stop();
+                    else
+                        _failLogger.Log($"{name}");
+
+                        sw.Stop();
                     _successLogger.Log($"Got info for: {name} Elapsed: {sw.Elapsed}");
                 }
                 else
@@ -60,11 +56,46 @@ namespace WhoIsCrawler.Services
                     _failLogger.Log($"{name}");
                 }
             }
-            WriteToFile(domainData, Configuration.Current.OutputFileName);
-            WriteToFile(registrantData, @"C:\Users\Public\registrants.json");
+            WriteToFile(domainData, Configuration.Current.DomainOutputFileName);
+            WriteToFile(registrantData, Configuration.Current.RegistrantsOutputFileName);
+        }
+
+        private DomainInformation GetDomainInfo(string html)
+        {
+            try
+            {
+                var result = _parser.ParseDomainInfo(html);
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private RegistrantInformation GetRegistrantInfo(string html)
+        {
+            try
+            {
+                var result = _parser.ParseRegistrantInfo(html);
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         private void WriteToFile<T>(List<T> data, string filename)
+        {
+            using (StreamWriter file = File.CreateText(filename))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.Serialize(file, data);
+            }
+        }
+
+        private void WriteToFile(List<RegistrantInformation> data, string filename)
         {
             using (StreamWriter file = File.CreateText(filename))
             {

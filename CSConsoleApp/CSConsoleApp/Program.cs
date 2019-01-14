@@ -21,11 +21,12 @@ namespace WhoIsCrawler
             Configuration.Current = new Configuration
             {
                 InputFileName = args[0],
-                OutputFileName = args[1],
-                ProxyAddress = args.Length > 2 ? args[2] : "",
-                ProxyUsername = args.Length > 3 ? args[3] : "",
-                ProxyPassword = args.Length > 4 ? args[4] : "",
-                FailedLogFile = args.Length > 5 ? args[5] : @"C:\Users\Public\failed_domains.log",
+                DomainOutputFileName = args[1],
+                RegistrantsOutputFileName = args[2],
+                FailedLogFile = args.Length > 3 ? args[3] : @"D:\failed_domains.log",
+                ProxyAddress = args.Length > 4 ? args[4] : "",
+                ProxyUsername = args.Length > 5 ? args[5] : "",
+                ProxyPassword = args.Length > 6 ? args[6] : "",
                 WhoIsDomain = "https://www.whois.com/",
                 Timeout = 15000,
             };
