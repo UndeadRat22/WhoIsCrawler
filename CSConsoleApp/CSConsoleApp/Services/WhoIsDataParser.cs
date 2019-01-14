@@ -65,7 +65,7 @@ namespace WhoIsCrawler.Services
                 var rows = table.SelectNodesByClass("df-row");
                 return new RegistrantInformation
                 {
-                    Name = GetFieldValue(rows, "Name"),
+                    Name = GetFieldValue(rows, "Name:"),
                     Organization = GetFieldValue(rows, "Organization"),
                     Street = GetFieldValue(rows, "Street"),
                     City = GetFieldValue(rows, "City"),

@@ -1,4 +1,5 @@
-﻿using WhoIsCrawler.Infrastructure;
+﻿using System.Diagnostics;
+using WhoIsCrawler.Infrastructure;
 using WhoIsCrawler.Services;
 
 namespace WhoIsCrawler
@@ -7,7 +8,7 @@ namespace WhoIsCrawler
     {
         public static void Main(string[] args)
         {
-            if (args.Length < 2)
+            if (args.Length < 3)
             {
                 System.Console.WriteLine("Please enter the files to read and write from.");
                 return;
