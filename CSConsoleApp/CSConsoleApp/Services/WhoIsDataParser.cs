@@ -135,7 +135,10 @@ namespace WhoIsCrawler.Services
                     if (name.Contains("Domain"))
                         info.Name = value;
                     if (name.Contains("Registrar"))
+                    {
                         info.Organization = value;
+                        break;
+                    }
                 }
             }
             return info;
