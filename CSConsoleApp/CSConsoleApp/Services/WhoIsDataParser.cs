@@ -26,9 +26,10 @@ namespace WhoIsCrawler.Services
             var raw = doc.DocumentNode.SelectSingleNodeByClass("df-raw");
             if (rows != null)
             {
+                Console.WriteLine(raw);
                 return new DomainInformation
                 {
-                    LastUpdate = GetLastUpdate(raw.InnerText ?? ""),
+                    LastUpdate = GetLastUpdate(raw.InnerText != null ? raw.InnerText : ""),
                     Domain = GetFieldValue(rows, "Domain"),
                     Registrar = GetFieldValue(rows, "Registrar"),
                     Registered = GetFieldValue(rows, "Registered On"),
@@ -93,7 +94,7 @@ namespace WhoIsCrawler.Services
         {
             if (raw == null)
                 return null;
-            var pattern = "[>]{3}.*: (.*)Z.[<]{3}";
+            var pattern = @"[&gt;]{3}.*: (.*)Z.[&lt;]{3}";
             foreach (var line in raw.Split('\n'))
             {
                 var match = Regex.Match(line, pattern);
