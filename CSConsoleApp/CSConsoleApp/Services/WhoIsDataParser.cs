@@ -23,10 +23,12 @@ namespace WhoIsCrawler.Services
             }
 
             var rows = table.SelectNodesByClass("df-row");
+            var raw = doc.DocumentNode.SelectSingleNodeByClass("df-raw");
             if (rows != null)
             {
                 return new DomainInformation
                 {
+                    LastUpdate = GetLastUpdate(raw.InnerText ?? ""),
                     Domain = GetFieldValue(rows, "Domain"),
                     Registrar = GetFieldValue(rows, "Registrar"),
                     Registered = GetFieldValue(rows, "Registered On"),
@@ -36,11 +38,11 @@ namespace WhoIsCrawler.Services
                     Servers = GetFieldHtml(rows, "Name Servers")?.Split("<br>"),
                 };
             }
-            var raw = doc.DocumentNode.SelectSingleNodeByClass("df-raw");
             if (raw == null)
                 return null;
-            return ParseRawForDomainInfo(raw.InnerText);
-
+            var info = ParseRawForDomainInfo(raw.InnerText);
+            info.LastUpdate = GetLastUpdate(raw.InnerText);
+            return info;
         }
         public RegistrantInformation ParseRegistrantInfo(string html)
         {
@@ -64,7 +66,7 @@ namespace WhoIsCrawler.Services
             {
                 var rows = table.SelectNodesByClass("df-row");
                 return new RegistrantInformation
-                {
+                { 
                     Name = GetFieldValue(rows, "Name:"),
                     Organization = GetFieldValue(rows, "Organization"),
                     Street = GetFieldValue(rows, "Street"),
@@ -85,6 +87,20 @@ namespace WhoIsCrawler.Services
                 }
                 return ParseRawForRegistrantInfo(raw.InnerText);
             }
+        }
+
+        private string GetLastUpdate(string raw)
+        {
+            if (raw == null)
+                return null;
+            var pattern = "[>]{3}.*: (.*)Z.[<]{3}";
+            foreach (var line in raw.Split('\n'))
+            {
+                var match = Regex.Match(line, pattern);
+                if (match.Success)
+                    return match.Groups[1].Value;
+            }
+            return null;
         }
 
         private DomainInformation ParseRawForDomainInfo(string raw)

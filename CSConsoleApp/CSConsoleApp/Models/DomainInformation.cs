@@ -6,6 +6,7 @@ namespace WhoIsCrawler.Models
 {
     public class DomainInformation
     {
+        public string LastUpdate { get; set; }
         public string Domain { get; set; }
         public string Registrar { get; set; }
         public string Registered { get; set; }
