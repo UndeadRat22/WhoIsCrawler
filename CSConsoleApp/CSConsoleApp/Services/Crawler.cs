@@ -38,15 +38,14 @@ namespace WhoIsCrawler.Services
                 {
                     var domainInfo = GetDomainInfo(queryResult.Content);
                     var registrantInfo = GetRegistrantInfo(queryResult.Content);
-                    if (domainInfo != null)         
-                        domainData.Add(domainInfo);
-                    else
+                    if (domainInfo == null || registrantInfo == null)         
                         _failLogger.Log($"{name}");
+
+                    if (domainInfo != null)
+                        domainData.Add(domainInfo);
 
                     if (registrantInfo != null)
                         registrantData.Add(registrantInfo);
-                    else
-                        _failLogger.Log($"{name}");
 
                         sw.Stop();
                     _successLogger.Log($"Got info for: {name} Elapsed: {sw.Elapsed}");
