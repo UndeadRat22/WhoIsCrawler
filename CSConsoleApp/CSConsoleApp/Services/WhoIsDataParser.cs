@@ -26,7 +26,6 @@ namespace WhoIsCrawler.Services
             var raw = doc.DocumentNode.SelectSingleNodeByClass("df-raw");
             if (rows != null)
             {
-                Console.WriteLine(raw);
                 return new DomainInformation
                 {
                     LastUpdate = GetLastUpdate(raw.InnerText != null ? raw.InnerText : ""),
