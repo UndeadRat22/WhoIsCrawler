@@ -1,0 +1,10 @@
+﻿{
+    "InputFileName" : "D:\\whois\\domains.txt",
+    "OutputFileName" : "D:\\whois\\output.json",
+    "FailedLogFile" : "D:\\whois\\failedlog.log",
+    "ProxyAddress" : "",
+    "ProxyUsername" : "",
+    "ProxyPassword" : "",
+    "WhoIsDomain" : "https://www.whois.com/",
+    "Timeout" : 15000
+}

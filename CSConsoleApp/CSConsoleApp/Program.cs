@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
 using WhoIsCrawler.Infrastructure;
 using WhoIsCrawler.Services;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace WhoIsCrawler
 {
@@ -8,28 +10,23 @@ namespace WhoIsCrawler
     {
         public static void Main(string[] args)
         {
-            if (args.Length < 3)
-            {
-                System.Console.WriteLine("Please enter the files to read and write from.");
-                return;
-            }
             InitConfig(args);
             Start();
         }
 
         private static void InitConfig(string[] args)
         {
-            Configuration.Current = new Configuration
+            var json = "";
+            try
             {
-                InputFileName = args[0],
-                OutputFileName = args[1],
-                FailedLogFile = args.Length > 2 ? args[2] : @"D:\failed_domains.log",
-                ProxyAddress = args.Length > 3 ? args[3] : "",
-                ProxyUsername = args.Length > 4 ? args[4] : "",
-                ProxyPassword = args.Length > 5 ? args[5] : "",
-                WhoIsDomain = "https://www.whois.com/",
-                Timeout = 15000,
-            };
+                json = File.ReadAllText("config.json");
+            }
+            catch
+            {
+                System.Console.WriteLine("Failed to read the configuration file!");
+                System.Environment.Exit(-1);
+            }
+            Configuration.Current = JsonConvert.DeserializeObject<Configuration>(json);
         }
 
         private static void Start()
