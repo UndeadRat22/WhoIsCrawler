@@ -21,7 +21,7 @@ namespace WhoIsCrawler.Services
             var rawInfo = new RawInformation();
             if (raw == null)
                 return null;
-            var pattern = @"^[A-Z][a-z ]+:\s*.*$";
+            var pattern = @"^[A-Z][A-Za-z ]+:\s*.*$";
             foreach (var line in raw.InnerText.Split('\n'))
             {
                 if (Regex.IsMatch(line, pattern))
