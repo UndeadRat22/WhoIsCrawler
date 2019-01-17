@@ -1,10 +1,16 @@
 ﻿{
-    "InputFileName" : "D:\\whois\\domains.txt",
-    "OutputFileName" : "D:\\whois\\output.json",
-    "FailedLogFile" : "D:\\whois\\failedlog.log",
-    "ProxyAddress" : "",
-    "ProxyUsername" : "",
-    "ProxyPassword" : "",
-    "WhoIsDomain" : "https://www.whois.com/",
-    "Timeout" : 15000
+  //Input file name of all of the domain files;
+  "InputFileName": "D:\\whois\\domains.txt",
+  //Output file name.
+  "OutputFileName": "D:\\whois\\output.json",
+  //Filename where to write failed domains (when 404 etc.)
+  "FailedLogFile": "D:\\whois\\failedlog.log",
+  //Proxy data to use when crawling|scraping (Optional, leave "" if not using a proxy)
+  "ProxyAddress": "",
+  "ProxyUsername": "",
+  "ProxyPassword": "",
+  //The domain to parse values from, currently only tested with whois.com
+  "WhoIsDomain": "https://www.whois.com/",
+  //Timeout for the WHOIS server response in milliseconds (/1000 to get seconds)
+  "Timeout": 15000
 }

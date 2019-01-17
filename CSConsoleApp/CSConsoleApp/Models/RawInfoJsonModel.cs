@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using WhoIsCrawler.Extensions;
+
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -15,6 +16,8 @@ namespace WhoIsCrawler.Models
             if (!match.Success)
                 return;
             var key = match.Groups[1].Value;
+            if (FilterConfig.Current.Ignore.Contains(key))
+                return;
             var value = match.Groups[2].Value;
             try
             {
@@ -39,12 +42,14 @@ namespace WhoIsCrawler.Models
         private string PairToString(KeyValuePair<string, List<string>> pair)
         {
             if (pair.Value.Count == 1)
-                return $"\"{pair.Key}\" : \"{pair.Value[0]}\",";
+                return $"\"{pair.Key}\" : \"{pair.Value[0].ApplyKeyFilters(pair.Key)}\",";
+
             var builder = new StringBuilder($"\"{pair.Key}\" : [");
+
             pair.Value
-                .ForEach(s => builder.Append($" \"{s}\","));
-            builder.Remove(builder.Length - 1, 1);
-            return builder.Append("],").ToString();
+                .ForEach(s => builder.Append($" \"{s.ApplyKeyFilters(pair.Key)}\","));
+
+            return builder.Remove(builder.Length - 1, 1).Append("],").ToString();
         }
     }
 }

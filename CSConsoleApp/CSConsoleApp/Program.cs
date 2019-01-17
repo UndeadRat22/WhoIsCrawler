@@ -1,8 +1,8 @@
-﻿using System.Diagnostics;
-using WhoIsCrawler.Infrastructure;
+﻿using WhoIsCrawler.Infrastructure;
 using WhoIsCrawler.Services;
 using Newtonsoft.Json;
 using System.IO;
+using WhoIsCrawler.Models;
 
 namespace WhoIsCrawler
 {
@@ -10,23 +10,24 @@ namespace WhoIsCrawler
     {
         public static void Main(string[] args)
         {
-            InitConfig(args);
+            Config.Current = GetConfig<Config>("config.json");
+            FilterConfig.Current = GetConfig<FilterConfig>("filters.json");
             Start();
         }
 
-        private static void InitConfig(string[] args)
+        private static T GetConfig<T>(string file)
         {
             var json = "";
             try
             {
-                json = File.ReadAllText("config.json");
+                json = File.ReadAllText(file);
             }
             catch
             {
-                System.Console.WriteLine("Failed to read the configuration file!");
+                System.Console.WriteLine($"Failed to read the configuration file: {file}!");
                 System.Environment.Exit(-1);
             }
-            Configuration.Current = JsonConvert.DeserializeObject<Configuration>(json);
+            return JsonConvert.DeserializeObject<T>(json);
         }
 
         private static void Start()
@@ -34,8 +35,8 @@ namespace WhoIsCrawler
             Crawler c = new Crawler(
                 new WhoIsDataParser(), 
                 new WhoIsClient(), 
-                new FileLogger(Configuration.Current.FailedLogFile), 
-                new FileLogger(Configuration.Current.OutputFileName),
+                new FileLogger(Config.Current.FailedLogFile), 
+                new FileLogger(Config.Current.OutputFileName),
                 new ConsoleLogger());
             c.Run();
         }

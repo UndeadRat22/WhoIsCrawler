@@ -1,8 +1,8 @@
-﻿namespace WhoIsCrawler
+﻿namespace WhoIsCrawler.Models
 {
-    public class Configuration
+    public class Config
     {
-        public static Configuration Current { get; set; }
+        public static Config Current { get; set; }
 
         public string InputFileName { get; set; }
         public string OutputFileName { get; set; }

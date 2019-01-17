@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Threading.Tasks;
 using RestSharp;
+using WhoIsCrawler.Models;
 
 namespace WhoIsCrawler.Services
 {
@@ -8,7 +9,7 @@ namespace WhoIsCrawler.Services
     {
         public async Task<IRestResponse<string>> QueryAsync(string domain)
         {
-            var client = new RestClient(Configuration.Current.WhoIsDomain);
+            var client = new RestClient(Config.Current.WhoIsDomain);
             var request = new RestRequest($"whois/{domain}", Method.GET);
             var resp = client.ExecuteTaskAsync<string>(request);
             return await resp;
@@ -20,9 +21,9 @@ namespace WhoIsCrawler.Services
                 Credentials = new NetworkCredential(user, pass)
             };
 
-            var client = new RestClient(Configuration.Current.WhoIsDomain)
+            var client = new RestClient(Config.Current.WhoIsDomain)
             {
-                Timeout = Configuration.Current.Timeout,
+                Timeout = Config.Current.Timeout,
                 Proxy = webproxy
             };
             var request = new RestRequest($"whois/{domain}", Method.GET);

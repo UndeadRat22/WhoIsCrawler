@@ -1,0 +1,17 @@
+﻿{
+  //How i define the word key:
+  //  Domain : google.com => "Domain" is the key.
+  //Filters to apply to every single element of a given key
+  //If none, just leave empty ("Filters" : {})
+  "Filters": {
+    "Domain Status": [
+      "http[s]?:"
+    ]
+  },
+  //Keys to ignore
+  //If none, just leave empty ("Ignore" : [])
+  "Ignore": [
+    "URL of the ICANN WHOIS Data Problem Reporting System",
+    "DNSSEC"
+  ]
+}

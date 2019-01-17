@@ -58,13 +58,13 @@ namespace WhoIsCrawler.Services
 
         public IRestResponse<string> DoQuery(string domain)
         {
-            if (Configuration.Current.ProxyAddress == "")
+            if (Config.Current.ProxyAddress == "")
                 return _client.QueryAsync(domain).Result;
             
             return _client.QueryWithProxyAsync(domain,
-                Configuration.Current.ProxyAddress,
-                Configuration.Current.ProxyUsername,
-                Configuration.Current.ProxyPassword)
+                Config.Current.ProxyAddress,
+                Config.Current.ProxyUsername,
+                Config.Current.ProxyPassword)
                 .Result;
         }
 
@@ -73,11 +73,11 @@ namespace WhoIsCrawler.Services
             StreamReader reader = null;
             try
             {
-                reader = new StreamReader(Configuration.Current.InputFileName);
+                reader = new StreamReader(Config.Current.InputFileName);
             }
             catch
             {
-                Console.WriteLine($"Failed to open file:{Configuration.Current.InputFileName}");
+                Console.WriteLine($"Failed to open file:{Config.Current.InputFileName}");
             }
             if (reader != null)
             {
