@@ -22,13 +22,11 @@ namespace WhoIsCrawler
             Configuration.Current = new Configuration
             {
                 InputFileName = args[0],
-                DomainOutputFileName = args[1],
-                RegistrantsOutputFileName = args[2],
-                RawOutputFileName = args[3],
-                FailedLogFile = args.Length > 4 ? args[4] : @"D:\failed_domains.log",
-                ProxyAddress = args.Length > 5 ? args[5] : "",
-                ProxyUsername = args.Length > 6 ? args[6] : "",
-                ProxyPassword = args.Length > 7 ? args[7] : "",
+                OutputFileName = args[1],
+                FailedLogFile = args.Length > 2 ? args[2] : @"D:\failed_domains.log",
+                ProxyAddress = args.Length > 3 ? args[3] : "",
+                ProxyUsername = args.Length > 4 ? args[4] : "",
+                ProxyPassword = args.Length > 5 ? args[5] : "",
                 WhoIsDomain = "https://www.whois.com/",
                 Timeout = 15000,
             };
@@ -40,6 +38,7 @@ namespace WhoIsCrawler
                 new WhoIsDataParser(), 
                 new WhoIsClient(), 
                 new FileLogger(Configuration.Current.FailedLogFile), 
+                new FileLogger(Configuration.Current.OutputFileName),
                 new ConsoleLogger());
             c.Run();
         }
