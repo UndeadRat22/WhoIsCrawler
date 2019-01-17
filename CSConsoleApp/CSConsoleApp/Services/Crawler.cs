@@ -29,6 +29,7 @@ namespace WhoIsCrawler.Services
         {
             var domainData = new List<DomainInformation>();
             var registrantData = new List<RegistrantInformation>();
+            var raws = new List<RawInformation>();
             Stopwatch sw = new Stopwatch();
             foreach (var name in GetDomainNames())
             {
@@ -38,7 +39,8 @@ namespace WhoIsCrawler.Services
                 {
                     var domainInfo = GetDomainInfo(queryResult.Content);
                     var registrantInfo = GetRegistrantInfo(queryResult.Content);
-                    if (domainInfo == null || registrantInfo == null)         
+                    var rawInfo = GetRaw(queryResult.Content);
+                    if (domainInfo == null || registrantInfo == null)
                         _failLogger.Log($"{name}");
 
                     if (domainInfo != null)
@@ -46,6 +48,12 @@ namespace WhoIsCrawler.Services
 
                     if (registrantInfo != null)
                         registrantData.Add(registrantInfo);
+
+                    if (rawInfo != null)
+                    {
+                        rawInfo.Domain = name;
+                        raws.Add(rawInfo);
+                    }
 
                         sw.Stop();
                     _successLogger.Log($"Got info for: {name} Elapsed: {sw.Elapsed}");
@@ -57,6 +65,20 @@ namespace WhoIsCrawler.Services
             }
             WriteToFile(domainData, Configuration.Current.DomainOutputFileName);
             WriteToFile(registrantData, Configuration.Current.RegistrantsOutputFileName);
+            WriteToFile(raws, Configuration.Current.RawOutputFileName);
+        }
+
+        private RawInformation GetRaw(string html)
+        {
+            try
+            {
+                var result = _parser.GetRawInfo(html);
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         private DomainInformation GetDomainInfo(string html)

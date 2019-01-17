@@ -12,6 +12,24 @@ namespace WhoIsCrawler.Services
 {
     public class WhoIsDataParser
     {
+
+        public RawInformation GetRawInfo(string html)
+        {
+            var doc = new HtmlDocument();
+            doc.LoadHtml(html);
+            var raw = doc.DocumentNode.SelectSingleNodeByClass("df-raw");
+            var rawInfo = new RawInformation();
+            if (raw == null)
+                return null;
+            var pattern = @"^[A-Z][a-z ]+:\s*.*$";
+            foreach (var line in raw.InnerText.Split('\n'))
+            {
+                if (Regex.IsMatch(line, pattern))
+                    rawInfo.Raw += $"{line}\n";
+            }
+            return rawInfo;
+        }
+
         public DomainInformation ParseDomainInfo(string html)
         {
             var doc = new HtmlDocument();
