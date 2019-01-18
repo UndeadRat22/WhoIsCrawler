@@ -12,5 +12,7 @@
   //The domain to parse values from, currently only tested with whois.com
   "WhoIsDomain": "https://www.whois.com/",
   //Timeout for the WHOIS server response in milliseconds (/1000 to get seconds)
-  "Timeout": 15000
+  "Timeout": 15000,
+  //Should create a second log, with better fail descriptions
+  "Debug": true
 }

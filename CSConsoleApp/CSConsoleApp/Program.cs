@@ -37,7 +37,8 @@ namespace WhoIsCrawler
                 new WhoIsClient(), 
                 new FileLogger(Config.Current.FailedLogFile), 
                 new FileLogger(Config.Current.OutputFileName),
-                new ConsoleLogger());
+                new ConsoleLogger(),
+                new FileLogger(Config.Current.FailedLogFile + "_debug"));
             c.Run();
         }
     }

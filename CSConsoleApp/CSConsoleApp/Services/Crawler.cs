@@ -16,14 +16,16 @@ namespace WhoIsCrawler.Services
         private ILogger _failLogger;
         private ILogger _outputLogger;
         private ILogger _successLogger;
+        private ILogger _debugLogger;
 
-        public Crawler(WhoIsDataParser parser, WhoIsClient client, ILogger failLogger, ILogger outputLogger, ILogger successLogger)
+        public Crawler(WhoIsDataParser parser, WhoIsClient client, ILogger failLogger, ILogger outputLogger, ILogger successLogger, ILogger debugLogger)
         {
             _parser = parser;
             _client = client;
             _failLogger = failLogger;
             _outputLogger = outputLogger;
             _successLogger = successLogger;
+            _debugLogger = debugLogger;
         }
 
         public void Run()
@@ -41,6 +43,10 @@ namespace WhoIsCrawler.Services
                     if (info == null)
                     {
                         _failLogger.Log($"{name}");
+                        if (Config.Current.Debug)
+                        {
+                            _debugLogger.Log($"{name}, reason: Failed to parse data ('df-raw' elemenent not found)");
+                        }
                         continue;
                     }
                     infoList.Add(info);
@@ -50,6 +56,10 @@ namespace WhoIsCrawler.Services
                 else
                 {
                     _failLogger.Log($"{name}");
+                    if (Config.Current.Debug)
+                    {
+                        _debugLogger.Log($"{name}, failed, reason: BadResponse {queryResult.StatusCode}");
+                    }
                 }
             }
             _outputLogger.Log(infoList, ',');
