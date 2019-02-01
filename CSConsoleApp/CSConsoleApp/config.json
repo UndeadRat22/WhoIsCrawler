@@ -13,6 +13,7 @@
   "WhoIsDomain": "https://www.whois.com/",
   //Timeout for the WHOIS server response in milliseconds (/1000 to get seconds)
   "Timeout": 15000,
+  "Delay": 12000,
   //Should create a second log, with better fail descriptions
   "Debug": true
 }

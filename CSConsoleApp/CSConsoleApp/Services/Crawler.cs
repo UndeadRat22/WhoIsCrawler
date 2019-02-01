@@ -1,8 +1,11 @@
 ﻿using System.Diagnostics;
+using System.Threading;
 
 using System;
 using System.Collections.Generic;
 using System.IO;
+
+
 using RestSharp;
 using WhoIsCrawler.Infrastructure.Abstract;
 using WhoIsCrawler.Models;
@@ -61,6 +64,7 @@ namespace WhoIsCrawler.Services
                         _debugLogger.Log($"{name}, failed, reason: BadResponse {queryResult.StatusCode}");
                     }
                 }
+                Thread.Sleep(Config.Current.Delay);
             }
             _outputLogger.Log(infoList, ',');
             _outputLogger.Log("]");

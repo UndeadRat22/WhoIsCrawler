@@ -14,6 +14,7 @@
 
         public string WhoIsDomain { get; set; }
         public int Timeout { get; set; }
+        public int Delay { get; set; }
 
         public bool Debug { get; set; }
     }
